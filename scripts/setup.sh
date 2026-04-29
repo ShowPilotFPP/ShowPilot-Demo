@@ -113,6 +113,11 @@ log "installing fake plugin..."
 mkdir -p "$FAKEPLUGIN_DIR"
 cp -f "$BUNDLE_DIR/fakeplugin/fake-plugin.js" "$FAKEPLUGIN_DIR/"
 cp -f "$BUNDLE_DIR/fakeplugin/package.json"   "$FAKEPLUGIN_DIR/"
+# Silent MP3s (one per track in fake-plugin's TRACKS array). Uploaded
+# into ShowPilot's audio cache on startup so the viewer player loads
+# real bytes and stays in "playing" state instead of "Load failed".
+mkdir -p "$FAKEPLUGIN_DIR/audio"
+cp -f "$BUNDLE_DIR/fakeplugin/audio/"*.mp3 "$FAKEPLUGIN_DIR/audio/"
 # No npm install needed — fake plugin is dependency-free (only uses node stdlib)
 
 # ============================================================
