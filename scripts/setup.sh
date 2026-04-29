@@ -29,7 +29,7 @@
 
 set -euo pipefail
 
-SHOWPILOT_VERSION="v0.31.0"
+SHOWPILOT_VERSION="v0.31.1"
 SHOWPILOT_REPO="https://github.com/ShowPilotFPP/ShowPilot.git"
 
 LIVE_DIR="/opt/showpilot-demo"
