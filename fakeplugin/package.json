@@ -1,0 +1,11 @@
+{
+  "name": "showpilot-demo-fake-plugin",
+  "version": "0.0.1",
+  "description": "Pretends to be FPP+ShowPilot-plugin for the public demo instance.",
+  "private": true,
+  "main": "fake-plugin.js",
+  "scripts": {
+    "start": "node fake-plugin.js"
+  },
+  "engines": { "node": ">=18" }
+}
