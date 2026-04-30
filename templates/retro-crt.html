@@ -195,25 +195,26 @@
   .crt-heading::before { content: '> '; color: var(--phosphor); }
 
   /* Voting list — terminal-list style */
+  /* 2-col grid pairs each song-cell with its vote-count sibling — see drive-in template note. */
   .voting_table {
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .voting_table .cell-vote-playlist,
-  .voting_table .cell-vote {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px;
   }
   .voting_table .cell-vote-playlist {
-    width: 80%;
     padding: 10px 14px;
     background: rgba(0, 25, 27, 0.4);
     border-left: 2px solid var(--phosphor-dim);
     color: var(--text);
     cursor: pointer;
+    display: flex;
     align-items: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 4px 10px;
     font-family: 'Courier New', monospace;
     font-size: 16px;
     transition: all 0.12s;
+    min-width: 0;
   }
   .voting_table .cell-vote-playlist::before {
     content: '▸';
@@ -226,7 +227,7 @@
     text-shadow: 0 0 6px var(--phosphor-soft);
   }
   .voting_table .cell-vote {
-    width: 20%;
+    display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 25, 27, 0.4);
@@ -236,13 +237,15 @@
     font-weight: bold;
     font-size: 22px;
     border-left: 1px solid var(--phosphor-dim);
+    padding: 0 16px;
+    min-width: 64px;
   }
   .cell-vote-playlist-artist {
-    display: block;
+    flex-basis: 100%;
     font-size: 11px;
     color: var(--phosphor-dim);
     letter-spacing: 0.08em;
-    margin-top: 2px;
+    margin: 0;
   }
 
   /* Jukebox grid */
