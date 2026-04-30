@@ -29,7 +29,7 @@
 
 set -euo pipefail
 
-SHOWPILOT_VERSION="v0.32.3"
+SHOWPILOT_VERSION="v0.31.0"
 SHOWPILOT_REPO="https://github.com/ShowPilotFPP/ShowPilot.git"
 
 LIVE_DIR="/opt/showpilot-demo"
@@ -177,33 +177,9 @@ fi
 # ============================================================
 log "installing reset.sh and build-seed.sh..."
 mkdir -p "$LIVE_DIR/scripts"
-cp -f "$BUNDLE_DIR/scripts/reset.sh"              "$LIVE_DIR/scripts/"
-cp -f "$BUNDLE_DIR/scripts/build-seed.sh"         "$LIVE_DIR/scripts/"
-cp -f "$BUNDLE_DIR/scripts/apply-demo-overlay.sh" "$LIVE_DIR/scripts/"
-chmod +x "$LIVE_DIR/scripts/reset.sh" \
-         "$LIVE_DIR/scripts/build-seed.sh" \
-         "$LIVE_DIR/scripts/apply-demo-overlay.sh"
-
-# Demo overlay — files that replace stock ShowPilot files to neuter
-# things visitors shouldn't actually trigger (Cloudflare Tunnel
-# install/start, etc.). Copied alongside the scripts so future
-# upgrades of ShowPilot can re-apply via apply-demo-overlay.sh
-# without needing the original bundle on disk.
-log "installing demo overlay files..."
-mkdir -p "$LIVE_DIR/scripts/overlay"
-cp -rf "$BUNDLE_DIR/overlay/." "$LIVE_DIR/scripts/overlay/"
-
-# Demo viewer templates moved to ShowPilot main in v0.32.0 — they ship
-# at public/viewer-templates/ in the cloned repo and seed themselves on
-# first boot. No demo-side action needed.
-
-# Apply the overlay over the freshly-cloned ShowPilot tree. Run
-# now so the ShowPilot we boot below is already neutered. After
-# any subsequent ShowPilot version bump (git checkout vX.Y.Z), the
-# operator must re-run apply-demo-overlay.sh — git checkout will
-# restore the upstream files.
-log "applying demo overlay..."
-bash "$LIVE_DIR/scripts/apply-demo-overlay.sh"
+cp -f "$BUNDLE_DIR/scripts/reset.sh"      "$LIVE_DIR/scripts/"
+cp -f "$BUNDLE_DIR/scripts/build-seed.sh" "$LIVE_DIR/scripts/"
+chmod +x "$LIVE_DIR/scripts/reset.sh" "$LIVE_DIR/scripts/build-seed.sh"
 
 # Ecosystem file
 cp -f "$BUNDLE_DIR/ecosystem.config.js" "$LIVE_DIR/ecosystem.config.js"

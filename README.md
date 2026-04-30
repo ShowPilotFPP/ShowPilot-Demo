@@ -11,8 +11,6 @@ can poke at the admin UI without permanently breaking anything.
 | `scripts/setup.sh` | One-time LXC bootstrap: installs deps, clones ShowPilot, registers PM2 processes, sets up cron + logrotate |
 | `scripts/build-seed.sh` | Constructs the "golden" seed data dir that resets restore from |
 | `scripts/reset.sh` | Cron'd every 10 min: stops processes, restores seed, restarts |
-| `scripts/apply-demo-overlay.sh` | Copies `overlay/` files over the live ShowPilot tree (neuters Cloudflare Tunnel install/start endpoints). Re-run after every `git checkout vX.Y.Z` of ShowPilot — git restores the upstream files on checkout |
-| `overlay/routes/cloudflared.js` | Demo replacement for ShowPilot's tunnel routes — UI shows the "online" state, every write endpoint returns a friendly "demo mode, can't do that" message |
 | `fakeplugin/fake-plugin.js` | Pretends to be FPP+ShowPilot-plugin; cycles 4 holiday tracks at ~2.5min each |
 | `fakeplugin/package.json` | Fake plugin's package metadata (zero deps) |
 | `ecosystem.config.js` | PM2 ecosystem registering both processes by name |

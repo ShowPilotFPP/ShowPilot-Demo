@@ -111,12 +111,6 @@ SET must_change_password = 0
 WHERE username = 'admin';
 EOF
 
-# Demo viewer templates moved to ShowPilot main in v0.32.0 — they're
-# now seeded by lib/db.js on first boot and live in public/viewer-templates/.
-# This block used to import them here; it's gone because keeping it would
-# duplicate the rows under slightly different display names.
-
-
 # Stop the live server so we can snapshot a quiet data dir
 log "stopping ShowPilot to snapshot..."
 pm2 stop showpilot-demo >/dev/null 2>&1
