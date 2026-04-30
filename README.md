@@ -13,7 +13,6 @@ can poke at the admin UI without permanently breaking anything.
 | `scripts/reset.sh` | Cron'd every 10 min: stops processes, restores seed, restarts |
 | `scripts/apply-demo-overlay.sh` | Copies `overlay/` files over the live ShowPilot tree (neuters Cloudflare Tunnel install/start endpoints). Re-run after every `git checkout vX.Y.Z` of ShowPilot — git restores the upstream files on checkout |
 | `overlay/routes/cloudflared.js` | Demo replacement for ShowPilot's tunnel routes — UI shows the "online" state, every write endpoint returns a friendly "demo mode, can't do that" message |
-| `templates/*.html` | Demo viewer-page templates (Holiday Marquee, Midnight Show, Minimal Clean). `build-seed.sh` imports these into the `viewer_page_templates` table as inactive built-ins so visitors can preview different looks via Settings → Templates → Activate |
 | `fakeplugin/fake-plugin.js` | Pretends to be FPP+ShowPilot-plugin; cycles 4 holiday tracks at ~2.5min each |
 | `fakeplugin/package.json` | Fake plugin's package metadata (zero deps) |
 | `ecosystem.config.js` | PM2 ecosystem registering both processes by name |

@@ -111,50 +111,11 @@ SET must_change_password = 0
 WHERE username = 'admin';
 EOF
 
-# Insert demo viewer-page templates so visitors can preview different
-# looks via Settings → Templates → Activate. The HTML lives next to
-# this script in templates/ so it's source-controlled and easy to
-# tweak. We use sqlite3's `.import` of CSV would be a pain with HTML
-# (commas, quotes), so we go through stdin parameter binding instead.
-#
-# Path resolution: works for both the initial-bundle layout
-# ($BUNDLE_DIR/scripts/build-seed.sh + $BUNDLE_DIR/templates/) and
-# the installed layout (/opt/showpilot-demo/scripts/build-seed.sh +
-# /opt/showpilot-demo/templates/). Both collapse to ../templates from
-# the script's own dir.
-TEMPLATES_DIR="$(dirname "$(readlink -f "$0")")/../templates"
-if [ -d "$TEMPLATES_DIR" ]; then
-  log "inserting demo viewer templates from $TEMPLATES_DIR..."
-  for tpl in "$TEMPLATES_DIR"/*.html; do
-    [ -f "$tpl" ] || continue
-    fname="$(basename "$tpl" .html)"
-    # Pretty-print the template name: "holiday-marquee" → "Holiday Marquee"
-    tpl_name="$(echo "$fname" | sed -e 's/-/ /g' -e 's/\b./\u&/g')"
-    # Use Python for reliable SQL escaping — bash quoting + 5KB of
-    # HTML is a recipe for footguns. python3 is already installed
-    # (apt-installed by setup.sh).
-    python3 - "$LIVE_DIR/data/showpilot.db" "$tpl_name" "$tpl" <<'PYEOF'
-import sqlite3, sys
-db_path, name, html_path = sys.argv[1], sys.argv[2], sys.argv[3]
-with open(html_path, 'r', encoding='utf-8') as f:
-    html = f.read()
-con = sqlite3.connect(db_path)
-# Insert as builtin so the demo's template list always shows them,
-# but NOT active — the default "Default (ShowPilot)" template stays
-# active so visitors land on familiar UI first and discover these
-# via Settings → Templates.
-con.execute(
-    "INSERT INTO viewer_page_templates (name, html, is_active, is_builtin) VALUES (?, ?, 0, 1)",
-    (name, html)
-)
-con.commit()
-con.close()
-PYEOF
-    log "  + $tpl_name"
-  done
-else
-  log "no templates/ directory found — skipping demo template import"
-fi
+# Demo viewer templates moved to ShowPilot main in v0.32.0 — they're
+# now seeded by lib/db.js on first boot and live in public/viewer-templates/.
+# This block used to import them here; it's gone because keeping it would
+# duplicate the rows under slightly different display names.
+
 
 # Stop the live server so we can snapshot a quiet data dir
 log "stopping ShowPilot to snapshot..."

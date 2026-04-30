@@ -29,7 +29,7 @@
 
 set -euo pipefail
 
-SHOWPILOT_VERSION="v0.32.0"
+SHOWPILOT_VERSION="v0.32.1"
 SHOWPILOT_REPO="https://github.com/ShowPilotFPP/ShowPilot.git"
 
 LIVE_DIR="/opt/showpilot-demo"
@@ -193,16 +193,9 @@ log "installing demo overlay files..."
 mkdir -p "$LIVE_DIR/scripts/overlay"
 cp -rf "$BUNDLE_DIR/overlay/." "$LIVE_DIR/scripts/overlay/"
 
-# Demo viewer templates — pre-made HTML/CSS templates that visitors
-# can switch to via Settings → Templates. Copied into LIVE_DIR so
-# build-seed.sh can find and import them when (re)building the seed
-# DB. Lives beside scripts/ rather than inside it because they're
-# data, not executables.
-if [ -d "$BUNDLE_DIR/templates" ]; then
-  log "installing demo viewer templates..."
-  mkdir -p "$LIVE_DIR/templates"
-  cp -f "$BUNDLE_DIR/templates/"*.html "$LIVE_DIR/templates/" 2>/dev/null || true
-fi
+# Demo viewer templates moved to ShowPilot main in v0.32.0 — they ship
+# at public/viewer-templates/ in the cloned repo and seed themselves on
+# first boot. No demo-side action needed.
 
 # Apply the overlay over the freshly-cloned ShowPilot tree. Run
 # now so the ShowPilot we boot below is already neutered. After
