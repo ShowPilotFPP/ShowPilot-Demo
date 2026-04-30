@@ -177,9 +177,40 @@ fi
 # ============================================================
 log "installing reset.sh and build-seed.sh..."
 mkdir -p "$LIVE_DIR/scripts"
-cp -f "$BUNDLE_DIR/scripts/reset.sh"      "$LIVE_DIR/scripts/"
-cp -f "$BUNDLE_DIR/scripts/build-seed.sh" "$LIVE_DIR/scripts/"
-chmod +x "$LIVE_DIR/scripts/reset.sh" "$LIVE_DIR/scripts/build-seed.sh"
+cp -f "$BUNDLE_DIR/scripts/reset.sh"              "$LIVE_DIR/scripts/"
+cp -f "$BUNDLE_DIR/scripts/build-seed.sh"         "$LIVE_DIR/scripts/"
+cp -f "$BUNDLE_DIR/scripts/apply-demo-overlay.sh" "$LIVE_DIR/scripts/"
+chmod +x "$LIVE_DIR/scripts/reset.sh" \
+         "$LIVE_DIR/scripts/build-seed.sh" \
+         "$LIVE_DIR/scripts/apply-demo-overlay.sh"
+
+# Demo overlay — files that replace stock ShowPilot files to neuter
+# things visitors shouldn't actually trigger (Cloudflare Tunnel
+# install/start, etc.). Copied alongside the scripts so future
+# upgrades of ShowPilot can re-apply via apply-demo-overlay.sh
+# without needing the original bundle on disk.
+log "installing demo overlay files..."
+mkdir -p "$LIVE_DIR/scripts/overlay"
+cp -rf "$BUNDLE_DIR/overlay/." "$LIVE_DIR/scripts/overlay/"
+
+# Demo viewer templates — pre-made HTML/CSS templates that visitors
+# can switch to via Settings → Templates. Copied into LIVE_DIR so
+# build-seed.sh can find and import them when (re)building the seed
+# DB. Lives beside scripts/ rather than inside it because they're
+# data, not executables.
+if [ -d "$BUNDLE_DIR/templates" ]; then
+  log "installing demo viewer templates..."
+  mkdir -p "$LIVE_DIR/templates"
+  cp -f "$BUNDLE_DIR/templates/"*.html "$LIVE_DIR/templates/" 2>/dev/null || true
+fi
+
+# Apply the overlay over the freshly-cloned ShowPilot tree. Run
+# now so the ShowPilot we boot below is already neutered. After
+# any subsequent ShowPilot version bump (git checkout vX.Y.Z), the
+# operator must re-run apply-demo-overlay.sh — git checkout will
+# restore the upstream files.
+log "applying demo overlay..."
+bash "$LIVE_DIR/scripts/apply-demo-overlay.sh"
 
 # Ecosystem file
 cp -f "$BUNDLE_DIR/ecosystem.config.js" "$LIVE_DIR/ecosystem.config.js"
