@@ -134,13 +134,24 @@ sudo /opt/showpilot-demo/scripts/reset.sh
 # Restart processes manually (e.g. after editing config.js)
 pm2 restart showpilot-demo
 
-# Update ShowPilot to a newer version
-cd /opt/showpilot-demo
-sudo -u showpilot git fetch --tags
-sudo -u showpilot git checkout vX.Y.Z
-sudo -u showpilot npm install --production
-sudo /opt/showpilot-demo/scripts/build-seed.sh   # rebuild seed against new schema
+# Update ShowPilot to the latest main (what ShipPilot's "ShowPilot Demo"
+# environment runs). Copies in the tunnel overlay and refuses to update if
+# ShowPilot added a tunnel endpoint the overlay doesn't neuter.
+sudo bash /opt/showpilot-demo-bundle/scripts/update-showpilot.sh
 ```
+
+### Cloudflare Tunnel overlay
+
+Demo visitors are admins, so the real Cloudflare Tunnel controls must never
+run on the demo. `overlay/routes/cloudflared.js` replaces ShowPilot's
+`routes/cloudflared.js` on every update: status, logs and the update check
+show a healthy-looking tunnel, and every action (install, token, start, stop,
+restart, uninstall, update) answers with a friendly "this is a demo" message.
+It is a whole-file copy rather than a patch, so it keeps applying when
+ShowPilot edits that file; `scripts/update-showpilot.sh` compares the
+endpoints first and stops if a new one appears. When that happens, add the
+endpoint to the overlay (deny it, or fake a harmless read) and release the
+bundle.
 
 ## Reverse proxy
 
