@@ -14,7 +14,8 @@
 #      overlay doesn't neuter, stop here and keep the current version:
 #      demo visitors are admins and must never reach a real tunnel control.
 #   3. Switch to the new code, copy the overlay over the real file,
-#      install dependencies and restart.
+#      install dependencies, and restart through reset.sh (kills whatever
+#      holds the port and re-registers the PM2 processes).
 #
 # Why a whole-file copy and not `git apply` of a patch: a patch carries
 # surrounding lines and stops applying as soon as ShowPilot edits nearby
@@ -54,6 +55,14 @@ install -o showpilot -g showpilot -m 644 "$OVERLAY" "$LIVE_DIR/routes/cloudflare
 grep -q "ShowPilot Demo — neutered Cloudflare Tunnel routes" "$LIVE_DIR/routes/cloudflared.js" \
   || { echo "ERROR: overlay copy didn't take"; exit 1; }
 as_sp npm install --omit=dev --no-audit --no-fund
-pm2 restart showpilot-demo
+
+# Restart through the reset script, not `pm2 restart`. PM2 on this LXC
+# loses track of the running ShowPilot from time to time; `pm2 restart`
+# then fails and the OLD process keeps serving while the new files sit on
+# disk underneath it. Modules it loads later come from the new version and
+# don't match the old code in memory, so the viewer page errors out
+# (seen after v0.33.265). reset.sh kills whatever holds the port, restores
+# the seed data and re-registers both processes from ecosystem.config.js.
+bash "$SCRIPT_DIR/reset.sh"
 
 echo "Updated to: $(grep '"version"' package.json | tr -d ' ,') (tunnel controls neutered)"
